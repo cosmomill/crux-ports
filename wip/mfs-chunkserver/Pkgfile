@@ -1,0 +1,32 @@
+# Description: MooseFS chunkserver, storing files data and synchronizing it among themselves
+# URL: http://www.moosefs.com/
+# Maintainer: Rene Kanzler, me at renekanzler dot com
+# Depends on: zlib
+
+name=mfs-chunkserver
+version=1.6.27
+release=1
+source=(http://www.moosefs.org/tl_files/mfscode/mfs-$version-1.tar.gz \
+		mfschunkserver)
+
+build() {
+	cd mfs-$version
+
+	./configure \
+		--prefix=/usr \
+		--mandir=/usr/man \
+		--sysconfdir=/etc \
+		--localstatedir=/var/lib \
+		--with-default-user=mfs \
+		--with-default-group=mfs \
+		--enable-mfschunkserver \
+		--disable-mfsmaster \
+		--disable-mfsmount \
+		--disable-mfscgi \
+		--disable-mfscgiserv
+
+	make
+	make DESTDIR=$PKG install
+	
+	install -D -m 755 $SRC/mfschunkserver $PKG/etc/rc.d/mfschunkserver
+}

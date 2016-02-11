@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# /etc/rc.d/mfsmetalogger: start/stop MooseFS metalogger daemon
+#
+
+case $1 in
+start)
+	/usr/sbin/mfsmetalogger start
+	;;
+stop)
+	/usr/sbin/mfsmetalogger stop
+	;;
+restart)
+	$0 stop
+	sleep 2
+	$0 start
+	;;
+*)
+	echo "usage: $0 [start|stop|restart]"
+	;;
+esac
+
+# End of file
+ 

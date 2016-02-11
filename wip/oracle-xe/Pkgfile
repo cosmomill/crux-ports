@@ -1,0 +1,50 @@
+# Description: Oracle Database 11g Express Edition
+# URL: http://www.oracle.com/
+# Maintainer: Rene Kanzler, me at renekanzler dot com
+# Depends on: libaio
+
+name=oracle-xe
+version=11.2.0-1.0
+release=1
+source=($name-$version.x86_64.rpm.zip \
+		oracle-xe.conf \
+		oracle-shm)
+
+build() {
+	bsdtar -p -o -C $SRC -xf $SRC/Disk1/$name-$version.x86_64.rpm
+
+	cp -r $SRC/u01 $PKG
+	chown -R oracle:dba $PKG/u01
+
+	# Desktop files
+	install -d $PKG/usr/share
+	cp -r $SRC/usr/share/* $PKG/usr/share/
+
+	# Create missing log directory
+	install -d -o oracle -g dba $PKG/u01/app/oracle/product/11.2.0/xe/config/log
+
+	# Fix postScripts.sql
+	sed -i "s|%ORACLE_HOME%|/u01/app/oracle/product/11.2.0/xe|" $PKG/u01/app/oracle/product/11.2.0/xe/config/scripts/postScripts.sql
+
+	# Fix permissions
+	find $PKG/u01/app/oracle/product/11.2.0/xe/config/scripts -type f -exec chmod 644 {} \;
+	find $PKG/u01/app/oracle/product/11.2.0/xe/config/scripts -name *.sh -type f -exec chmod 755 {} \;
+	find $PKG/u01/app/oracle/product/11.2.0/xe/bin -type f -exec chmod 755 {} \;
+	# Set sticky bit to oracle executable
+	chmod 6751 $PKG/u01/app/oracle/product/11.2.0/xe/bin/oracle
+    
+	# LD_LIBRARY_PATH
+	install -D -m 644 $SRC/oracle-xe.conf $PKG/etc/ld.so.conf.d/oracle-xe.conf
+
+	# Create sysconfig directory
+	install -d $PKG/etc/sysconfig
+
+	# Start Oracle XE services at boot
+	install -D -m 755 $SRC/etc/init.d/oracle-xe $PKG/etc/rc.d/oracle-xe
+	sed -i "s|/bin/su|/usr/bin/su|" $PKG/etc/rc.d/oracle-xe
+	sed -i "s|/bin/awk|/usr/bin/awk|" $PKG/etc/rc.d/oracle-xe
+	sed -i "s|/var/lock/subsys|/var/run|" $PKG/etc/rc.d/oracle-xe
+
+	# Setup the oracle-shm service
+	install -D -m 755 $SRC/oracle-shm $PKG/etc/rc.d/oracle-shm
+} 

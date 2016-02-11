@@ -1,0 +1,61 @@
+# Description: SMB server and client for unix
+# URL: http://www.samba.org
+# Maintainer: Rene Kanzler, me at renekanzler dot com
+# Depends on: ncurses openssl readline zlib libcap acl
+# tdb is part of the samba suite
+# talloc is part of the samba suite
+
+name=samba
+version=4.1.3
+release=1
+source=(http://www.samba.org/samba/ftp/stable/$name-$version.tar.gz \
+        samba)
+
+build () {
+    cd $name-$version
+
+    local JOBS=$(awk 'BEGIN{RS="-j|--jobs="} NR==2 {print $1}' <<< $MAKEFLAGS)
+    test -n "$JOBS" && export JOBS="$JOBS"
+
+    ./configure --enable-fhs \
+                --prefix=/usr \
+                --localstatedir=/var \
+                --mandir=/usr/man \
+                --sysconfdir=/etc \
+                --with-privatedir=/etc/samba/private \
+                --without-winbind \
+                --without-ads \
+                --without-ldap \
+                --disable-cups \
+                --disable-iprint \
+                --without-pam \
+                --without-pam_smbpass \
+                --without-quotas \
+                --disable-avahi \
+                --without-dnsupdate \
+                --without-automount \
+                --without-dmapi \
+                --without-fam \
+                --without-profiling-data \
+                --without-cluster-support \
+                --without-regedit \
+                --disable-glusterfs \
+                --without-ad-dc
+
+    make
+    make DESTDIR=$PKG install
+
+    # man pages
+    install -d $PKG/usr/man/man{1,5,8}
+    install -m 644 docs/manpages/*.1 $PKG/usr/man/man1
+    install -m 644 docs/manpages/*.5 $PKG/usr/man/man5
+    install -m 644 docs/manpages/*.8 $PKG/usr/man/man8
+    
+    # cleanup
+    chmod 1777 $PKG/var/lock
+    
+    # config-file and start-script
+    install -d $PKG/etc/{samba,rc.d}
+    install -m 0600 packaging/LSB/smb.conf $PKG/etc/samba/smb.conf.default
+    install -m 0755 $SRC/samba $PKG/etc/rc.d
+}

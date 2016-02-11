@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# /etc/rc.d/mfsmaster: start/stop MooseFS master daemon
+#
+
+case $1 in
+start)
+	/usr/sbin/mfsmaster start
+	;;
+stop)
+	/usr/sbin/mfsmaster stop
+	;;
+restart)
+	$0 stop
+	sleep 2
+	$0 start
+	;;
+*)
+	echo "usage: $0 [start|stop|restart]"
+	;;
+esac
+
+# End of file
+ 

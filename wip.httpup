@@ -1,0 +1,8 @@
+#
+# /etc/ports/wip.httpup
+#
+  
+ROOT_DIR=/usr/ports/wip
+URL=https://raw.githubusercontent.com/cosmomill/crux-ports/master/wip/
+
+# End of file

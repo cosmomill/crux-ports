@@ -1,0 +1,36 @@
+# Description: MooseFS master, managing the whole filesystem and storing metadata
+# URL: http://www.moosefs.com/
+# Maintainer: Rene Kanzler, me at renekanzler dot com
+# Depends on: zlib python
+
+name=mfs-master
+version=1.6.27
+release=1
+source=(http://www.moosefs.org/tl_files/mfscode/mfs-$version-1.tar.gz \
+		mfsmaster \
+		mfsmetalogger \
+		mfscgiserv)
+
+build() {
+	cd mfs-$version
+
+	./configure \
+		--prefix=/usr \
+		--mandir=/usr/man \
+		--sysconfdir=/etc \
+		--localstatedir=/var/lib \
+		--with-default-user=mfs \
+		--with-default-group=mfs \
+		--enable-mfsmaster \
+		--enable-mfscgiserv \
+		--enable-mfscgi \
+		--disable-mfschunkserver \
+		--disable-mfsmount
+		
+	make
+	make DESTDIR=$PKG install
+	
+	install -D -m 755 $SRC/mfsmaster $PKG/etc/rc.d/mfsmaster
+	install -D -m 755 $SRC/mfsmetalogger $PKG/etc/rc.d/mfsmetalogger
+	install -D -m 755 $SRC/mfscgiserv $PKG/etc/rc.d/mfscgiserv
+}

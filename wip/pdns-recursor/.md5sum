@@ -1,0 +1,5 @@
+fdbc225ec81a3eb00ead8f9b7c492abd  Makefile.patch
+d6eef4b4cacb2183f2bf265a5a03a354  boost_1_55_0.tar.bz2
+950d91139e23dd995eb3a8149e24311a  pdns-recursor
+7c99d2d053e157a3509693f0e4765c3b  pdns-recursor-3.5.3.tar.bz2
+a302c56ce52281915e6874f34958531c  recursor.conf

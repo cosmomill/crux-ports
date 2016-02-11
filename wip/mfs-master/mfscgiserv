@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# /etc/rc.d/mfscgiserv: start/stop MooseFS CGI-server daemon
+#
+
+case $1 in
+start)
+	/usr/sbin/mfscgiserv
+	;;
+stop)
+	/usr/sbin/mfscgiserv stop
+	;;
+restart)
+	$0 stop
+	sleep 2
+	$0 start
+	;;
+*)
+	echo "usage: $0 [start|stop|restart]"
+	;;
+esac
+
+# End of file
+ 

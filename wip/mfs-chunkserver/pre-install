@@ -1,0 +1,6 @@
+#!/bin/sh
+
+getent group mfs || /usr/sbin/groupadd mfs
+getent passwd mfs || /usr/sbin/useradd -g mfs -d /var/lib/mfs -s /bin/false mfs
+/usr/bin/passwd -l mfs
+

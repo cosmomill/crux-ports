@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# /etc/rc.d/memached: start/stop memcached daemon
+#
+
+. /etc/memcached.conf
+
+case $1 in
+start)
+	/usr/bin/memcached $MEMCACHED_ARGS -d
+	;;
+stop)
+	killall -q /usr/bin/memcached
+	;;
+restart)
+	$0 stop
+	sleep 2
+	$0 start
+	;;
+*)
+	echo "usage: $0 [start|stop|restart]"
+	;;
+esac
+
+# End of file

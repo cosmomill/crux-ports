@@ -1,0 +1,14 @@
+drwxr-xr-x	root/root	etc/
+-rw-------	root/root	etc/memcached.conf
+drwxr-xr-x	root/root	etc/rc.d/
+-rwxr-xr-x	root/root	etc/rc.d/memcached
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/memcached
+-rwxr-xr-x	root/root	usr/bin/memcached-tool
+drwxr-xr-x	root/root	usr/include/
+drwxr-xr-x	root/root	usr/include/memcached/
+-rw-r--r--	root/root	usr/include/memcached/protocol_binary.h
+drwxr-xr-x	root/root	usr/man/
+drwxr-xr-x	root/root	usr/man/man1/
+-rw-r--r--	root/root	usr/man/man1/memcached.1.gz

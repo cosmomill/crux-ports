@@ -1,0 +1,12 @@
+#!/bin/sh
+
+getent group dba || /usr/sbin/groupadd dba
+getent passwd oracle || /usr/sbin/useradd -g dba -d /u01/app/oracle -s /bin/false oracle
+/usr/bin/passwd -l oracle
+
+echo
+echo "############################################################"
+echo "Download \"oracle-xe-11.2.0-1.0.x86_64.rpm.zip\" from:"
+echo "http://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html"
+echo "############################################################"
+echo

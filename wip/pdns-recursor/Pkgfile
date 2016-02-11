@@ -1,0 +1,31 @@
+# Description: pdns_recursor is a versatile high performance recursing nameserver
+# URL: https://www.powerdns.com/recursor.html
+# Maintainer: Rene Kanzler, me at renekanzler dot com
+
+name=pdns-recursor
+version=3.5.3
+release=1
+source=(http://downloads.powerdns.com/releases/$name-$version.tar.bz2 \
+		http://downloads.sourceforge.net/project/boost/boost/1.55.0/boost_1_55_0.tar.bz2 \
+		Makefile.patch \
+		recursor.conf \
+		pdns-recursor)
+
+build() {
+	cd $name-$version
+	patch -p1 -i $SRC/Makefile.patch
+	
+	sed -i -e s:/var/run/:/var/lib/pdns/: config.h || die
+
+	CXXFLAGS=-I$SRC/boost_1_55_0/ ./configure
+
+	CXXFLAGS=-I$SRC/boost_1_55_0/ make clean
+	CXXFLAGS=-I$SRC/boost_1_55_0/ make
+	CXXFLAGS=-I$SRC/boost_1_55_0/ make DESTDIR=$PKG install
+	
+	install -d $PKG/var/lib/pdns/var/lib
+	ln -sf ../.. $PKG/var/lib/pdns/var/lib/pdns
+	
+	install -D -m 755 $SRC/pdns-recursor $PKG/etc/rc.d/pdns-recursor
+	install -D -m 644 $SRC/recursor.conf $PKG/etc/powerdns/recursor.conf
+}

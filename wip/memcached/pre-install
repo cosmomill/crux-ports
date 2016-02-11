@@ -1,0 +1,4 @@
+#!/bin/sh
+
+getent passwd memcached || /usr/sbin/useradd -g daemon -d /dev/null -s /bin/false memcached
+/usr/bin/passwd -l memcached

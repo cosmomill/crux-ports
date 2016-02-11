@@ -1,0 +1,23 @@
+# Description: iSCSI-SCST with scstadmin
+# URL: http://scst.sourceforge.net/index.html
+# Maintainer: Rene Kanzler, me at renekanzler dot com
+
+name=scst
+version=2.2.1
+release=5180
+source=(http://sourceforge.net/code-snapshots/svn/s/sc/$name/svn/$name-svn-$release-trunk.zip)
+
+build() {
+  cd $name-svn-$release-trunk
+  make scst 
+  make PREFIX=/usr DESTDIR=$PKG scst_install
+  make iscsi
+  make PREFIX=/usr DESTDIR=$PKG ISCSI_DESTDIR=$PKG iscsi_install
+  make scstadm
+  make PREFIX=/usr DESTDIR=$PKG scstadm_install
+  
+  rm -rf $PKG/etc/default
+  mkdir $PKG/etc/rc.d
+  cp $PKG/etc/init.d/scst $PKG/etc/rc.d
+  rm -rf $PKG/etc/init.d
+}

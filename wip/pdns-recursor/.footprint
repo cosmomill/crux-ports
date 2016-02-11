@@ -1,0 +1,20 @@
+drwxr-xr-x	root/root	etc/
+drwxr-xr-x	root/root	etc/powerdns/
+-rw-r--r--	root/root	etc/powerdns/recursor.conf
+drwxr-xr-x	root/root	etc/rc.d/
+-rwxr-xr-x	root/root	etc/rc.d/pdns-recursor
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/rec_control
+drwxr-xr-x	root/root	usr/man/
+drwxr-xr-x	root/root	usr/man/man1/
+-rw-r--r--	root/root	usr/man/man1/pdns_recursor.1.gz
+-rw-r--r--	root/root	usr/man/man1/rec_control.1.gz
+drwxr-xr-x	root/root	usr/sbin/
+-rwxr-xr-x	root/root	usr/sbin/pdns_recursor
+drwxr-xr-x	root/root	var/
+drwxr-xr-x	root/root	var/lib/
+drwxr-xr-x	root/root	var/lib/pdns/
+drwxr-xr-x	root/root	var/lib/pdns/var/
+drwxr-xr-x	root/root	var/lib/pdns/var/lib/
+lrwxrwxrwx	root/root	var/lib/pdns/var/lib/pdns -> ../..

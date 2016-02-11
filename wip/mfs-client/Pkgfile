@@ -1,0 +1,29 @@
+# Description: Moosefs client tools
+# URL: http://www.moosefs.com/
+# Maintainer: Rene Kanzler, me at renekanzler dot com
+# Depends on: zlib fuse
+
+name=mfs-client
+version=1.6.27
+release=1
+source=(http://www.moosefs.org/tl_files/mfscode/mfs-$version-1.tar.gz)
+
+build() {
+	cd mfs-$version
+
+	./configure \
+		--prefix=/usr \
+		--mandir=/usr/man \
+		--sysconfdir=/etc \
+		--localstatedir=/var/lib \
+		--with-default-user=mfs \
+		--with-default-group=mfs \
+		--enable-mfsmount \
+		--disable-mfschunkserver \
+		--disable-mfsmaster \
+		--disable-mfscgi \
+		--disable-mfscgiserv
+
+	make
+	make DESTDIR=$PKG install
+}

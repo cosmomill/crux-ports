@@ -1,0 +1,98 @@
+# Description: Java Servlet container (binary version)
+# URL: http://jakarta.apache.org/tomcat/index.html
+# Maintainer: Rene Kanzler, me at renekanzler dot com
+# Depends on: jdk apr
+
+name=tomcat
+version=7.0.67
+release=1
+source=(http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.67/bin/apache-tomcat-$version.tar.gz \
+		tomcat \
+		tomcat.env)
+
+build() {
+	# build the apache tomcat native library (requires apr at build and runtime), this improves performance
+	bsdtar -p -o -C $SRC -xf $SRC/apache-tomcat-$version/bin/tomcat-native.tar.gz
+	pushd $SRC/tomcat-native-*-src/jni/native
+	./configure \
+		--prefix=/usr \
+		--with-apr=/usr \
+		--with-ssl=/usr \
+		--with-java-home=/usr/lib/java
+	make
+	mkdir -p $PKG/usr/lib/pkgconfig
+	make DESTDIR=$PKG install
+
+	# remove static library
+	rm -f $PKG/usr/local/apr/lib/libtcnative-1.a
+	popd
+
+	# build jsvc
+	bsdtar -p -o -C $SRC -xf $SRC/apache-tomcat-$version/bin/commons-daemon-native.tar.gz
+	pushd $SRC/commons-daemon-*-native-src/unix
+	sed -i -e 's|/usr/java/default|/usr/lib/java|g' native/location.c
+	./configure \
+		--prefix=/usr \
+		--with-java=/usr/lib/java
+	make
+	install -D -o root -g root -m 755 jsvc $PKG/usr/bin/jsvc
+	popd
+
+	# install tomcat
+	pushd $SRC/apache-tomcat-$version
+	mkdir -p $PKG/{etc,usr/lib,var/tomcat}
+	mv lib $PKG/usr/lib/tomcat
+	mv bin $PKG/usr/lib/tomcat
+	mv conf $PKG/etc/tomcat
+	mv webapps $PKG/var/tomcat
+
+	# remove crap
+	rm \
+		$PKG/usr/lib/tomcat/tomcat-i18n-*.jar \
+		$PKG/usr/lib/tomcat/bin/*.bat \
+		$PKG/usr/lib/tomcat/bin/*.sh \
+		$PKG/usr/lib/tomcat/bin/tomcat-native.tar.gz \
+		$PKG/usr/lib/tomcat/bin/commons-daemon-native.tar.gz
+
+	echo -e '#!/bin/sh\nexec /etc/rc.d/tomcat start' > $PKG/usr/lib/tomcat/bin/startup.sh
+	echo -e '#!/bin/sh\nexec /etc/rc.d/tomcat stop' > $PKG/usr/lib/tomcat/bin/shutdown.sh
+	chmod 755 $PKG/usr/lib/tomcat/bin/{startup,shutdown}.sh
+
+	# if you want to keep these things, comment these lines:
+	rm -rf $PKG/var/tomcat/webapps/examples
+	rm -rf $PKG/var/tomcat/webapps/docs
+
+	install -D -o root -g root -m 755 $SRC/$name $PKG/etc/rc.d/$name
+	install -D -o root -g root -m 755 $SRC/$name.env $PKG/etc/$name/$name.env
+	if [ "$(uname -m |grep 64\$)" ]; then
+		sed -i -e 's|/usr/lib/jdk/jre/lib/i386/server|/usr/lib/jdk/jre/lib/amd64/server|' $PKG/etc/$name/$name.env
+	fi
+
+	mkdir $PKG/etc/tomcat/Catalina
+	chown -R root:tomcat $PKG/etc/tomcat
+	chmod -R g+r $PKG/etc/tomcat
+	chmod g+w $PKG/etc/tomcat/Catalina
+	chown -R tomcat:tomcat $PKG/var/tomcat/webapps
+	install -d -m 755 -o tomcat -g tomcat $PKG/var/tomcat/work
+	install -d -m 755 -o tomcat -g tomcat $PKG/var/log/tomcat
+
+	ln -s ../../../etc/tomcat $PKG/usr/lib/tomcat/conf
+	ln -s ../../../var/log/tomcat $PKG/usr/lib/tomcat/logs
+	ln -s ../../../var/tomcat/webapps $PKG/usr/lib/tomcat/webapps
+	ln -s ../../../var/tomcat/work $PKG/usr/lib/tomcat/work
+	ln -s ../../../var/run/tomcat/temp $PKG/usr/lib/tomcat/temp
+	ln -s . $PKG/usr/lib/tomcat/lib
+
+	# we already have the symlinks from before, so its not really needed, but here it goes:
+	find $PKG/etc/tomcat -type f -exec \
+		sed -i \
+		-e 's|${catalina.base}/logs|/var/log/tomcat|g' \
+		-e 's|${catalina.base}/lib|/usr/lib/tomcat|g' \
+		-e 's|${catalina.home}/lib|/usr/lib/tomcat|g' \
+		-e 's|${catalina.base}/webapps|/usr/lib/tomcat/webapps|g' \
+		-e 's|${catalina.home}/webapps|/usr/lib/tomcat/webapps|g' \
+		-e 's|${catalina.base}${file.separator}conf|/etc/tomcat|g' \
+		-e 's|${catalina.base}${file.separator}logs|/var/log/tomcat|g' \
+		{} +
+	popd
+}

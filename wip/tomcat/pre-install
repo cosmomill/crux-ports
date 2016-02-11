@@ -1,0 +1,5 @@
+#!/bin/sh
+
+getent group tomcat || /usr/sbin/groupadd tomcat
+getent passwd tomcat || /usr/sbin/useradd -g tomcat -d /var/empty -s /bin/false tomcat
+/usr/bin/passwd -l tomcat

@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# /etc/rc.d/mfschunkserver: start/stop MooseFS chunkserver daemon
+#
+
+case $1 in
+start)
+	/usr/sbin/mfschunkserver start
+	;;
+stop)
+	/usr/sbin/mfschunkserver stop
+	;;
+restart)
+	$0 stop
+	sleep 2
+	$0 start
+	;;
+*)
+	echo "usage: $0 [start|stop|restart]"
+	;;
+esac
+
+# End of file
+ 

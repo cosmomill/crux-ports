@@ -1,0 +1,32 @@
+#!/bin/sh
+#
+# /etc/rc.d/oracle-shm: start/stop openchange-samba daemon
+#
+
+case $1 in
+  start)
+    echo "Starting script /etc/rc.d/oracle-shm"
+    # Run only once at system startup
+    if [ -e /dev/shm/.oracle-shm ]; then
+      echo "/dev/shm is already mounted, nothing to do"
+    else
+      echo "Attempting to mount /dev/shm"
+      rm -rf /dev/shm
+      mkdir /dev/shm
+      mkdir /run/shm
+      mount -B /run/shm /dev/shm
+      chmod 1777 /dev/shm
+      touch /dev/shm/.oracle-shm
+    fi
+    ;;
+  stop)
+    echo "Stopping script /etc/rc.d/oracle-shm"
+    echo "Nothing to do"
+    ;;
+  *)
+    echo "Usage: /etc/rc.d/oracle-shm {start|stop}"
+    exit 1
+    ;;
+esac
+
+# End of file

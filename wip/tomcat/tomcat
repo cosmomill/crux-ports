@@ -1,0 +1,82 @@
+#!/bin/sh
+#
+# /etc/rc.d/tomcat: start/stop tomcat using jsvc
+#
+
+# read tomcat environment variables
+. /etc/tomcat/tomcat.env
+
+NAME=tomcat
+USER=$NAME
+RUNDIR=/var/run/$NAME
+PIDFILE=$RUNDIR/$NAME.pid
+STARTCMD="/usr/bin/jsvc -server -user $USER -outfile SYSLOG -errfile SYSLOG -pidfile $PIDFILE -classpath $CLASSPATH -java-home $JAVA_HOME -wait 10 $LOGGING_MANAGER $LOGGING_CONFIG $JAVA_OPTS $CATALINA_OPTS -Djava.endorsed.dirs=$JAVA_ENDORSED_DIRS $JAVA_SECURITY_OPTS -Dcatalina.base=$CATALINA_BASE -Dcatalina.home=$CATALINA_HOME -Djava.io.tmpdir=$CATALINA_TMPDIR -verbose org.apache.catalina.startup.Bootstrap"
+STOPCMD="/usr/bin/jsvc -server -user $USER -outfile SYSLOG -errfile SYSLOG -pidfile $PIDFILE -classpath $CLASSPATH -java-home $JAVA_HOME $LOGGING_MANAGER $LOGGING_CONFIG $JAVA_OPTS $CATALINA_OPTS -Djava.endorsed.dirs=$JAVA_ENDORSED_DIRS $JAVA_SECURITY_OPTS -Dcatalina.base=$CATALINA_BASE -Dcatalina.home=$CATALINA_HOME -Djava.io.tmpdir=$CATALINA_TMPDIR -verbose -nodetach -stop org.apache.catalina.startup.Bootstrap"
+STOPTIMEOUT=300
+
+function getpid() {
+	if [ -z "$PIDFILE" ]; then
+		pid="$(pgrep -xfn "$STARTCMD")"
+	else
+		if [ -f "$PIDFILE" ]; then
+			pid=$(< $PIDFILE)
+			if [ ! -d /proc/"$pid" ]; then
+				echo "$NAME: removing stale pidfile $PIDFILE" >&2
+				rm -f "$PIDFILE"
+				unset pid
+			fi
+		fi
+	fi
+	echo "$pid"
+}
+
+case $1 in
+start)
+	pid=$(getpid)
+	install -d -m 755 -o $USER $RUNDIR || exit 1
+	install -d -m 755 -o $USER $CATALINA_TMPDIR || exit 1
+	if [ -n "$pid" ]; then
+		echo "$NAME already running with pid $pid" >&2
+		exit 1
+	fi
+	eval "$STARTCMD"
+	;;
+stop)
+	pid=$(getpid)
+	if [ -n "$pid" ]; then
+		if [ -n "$STOPCMD" ]; then
+			eval "$STOPCMD"
+		else
+			kill "$pid"
+		fi
+		t=$(printf '%(%s)T' -1)
+		tend=$((t+STOPTIMEOUT))
+		while [ -d /proc/$pid -a $t -lt $tend ]; do
+			sleep 0.5
+			t=$(printf '%(%s)T' -1)
+		done
+		if [ -d /proc/"$pid" ]; then
+			echo "$NAME still running with pid $pid" >&2
+		else
+			[ -n "$PIDFILE" ] && rm -f "$PIDFILE"
+		fi
+	else
+		echo "$NAME is not running" >&2
+	fi
+	;;
+restart)
+	$0 stop
+	$0 start
+	;;
+status)
+	pid=$(getpid)
+	if [ -n "$pid" ]; then
+		echo "$NAME is running with pid $pid"
+	else
+		echo "$NAME is not running"
+	fi
+	;;
+*)
+	echo "usage: $0 [start|stop|restart|status]"
+	;;
+esac
