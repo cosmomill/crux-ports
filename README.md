@@ -14,7 +14,7 @@ Add the new ports directory to the /etc/prt-get.conf. Place it above other port 
 
 <pre>
 prtdir /usr/ports/wip 
-<pre>
+</pre>
 
 Trying packages
 --------------------
