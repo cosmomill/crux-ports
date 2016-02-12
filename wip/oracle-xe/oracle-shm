@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# /etc/rc.d/oracle-shm: start/stop openchange-samba daemon
+# /etc/rc.d/oracle-shm: start/stop
 #
 
 case $1 in

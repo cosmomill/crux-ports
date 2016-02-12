@@ -9,11 +9,11 @@ d:mfs-client
 d:scst
 d:memcached
 d:jdk
-f:a542cb8049e55a59fe1c552a52a95e5c:tomcat/tomcat
+f:10df55da7d6884d9b237f37fdce51502:tomcat/tomcat
 f:f5eba1a78dc7d18bf6136ca4a0ef95d1:tomcat/Pkgfile
 f:7ae2f3307db7489f0d5622e83c27db10:tomcat/tomcat.env
 f:58c2e64db9321911467445cf2cb86f42:tomcat/pre-install
-f:0480d78fb750814fe2e67be0799b18ca:tomcat/.md5sum
+f:6db9d8287f5ae4f041c1fed9fac11dff:tomcat/.md5sum
 f:37a9095a7ccebc43937afb80d3bd3c1a:tomcat/.footprint
 f:e97870f4d3ee192724b4f8962615edb6:samba-minimal/Pkgfile
 f:448caca4745aef1a842f4fdb1aa62e1e:samba-minimal/samba
@@ -24,12 +24,12 @@ f:3c13277d74069951297f0f300e487eef:mfs-chunkserver/Pkgfile
 f:50ede55698dbf7372e549cd2abe93e9b:mfs-chunkserver/pre-install
 f:938eb526e4395a15545fdbe3cb37ee64:mfs-chunkserver/.md5sum
 f:5b6e12065df202e77e350ee1f01d40ec:mfs-chunkserver/.footprint
-f:930714c4de8584a1a2d1e4a31336a47f:oracle-xe/Pkgfile
-f:7f27f06a7f9253253d12dc52ae1b33f8:oracle-xe/oracle-shm
-f:5d8e30fddfac20d444b4b2f5dffe56ac:oracle-xe/post-install
+f:7edc701ab25c66dc8e01ab59c63a3a1f:oracle-xe/Pkgfile
+f:653f7d1b35d712b0910df113187ce1ad:oracle-xe/oracle-shm
+f:caf8e289f327823eda93d0d3fd428325:oracle-xe/post-install
 f:7531ec2d467e8852a39f38f95c116673:oracle-xe/oracle-xe.conf
 f:420937f9538f3a6bffc74929ee2fdc4d:oracle-xe/pre-install
-f:e375538c75ff572d71bbeff0c701a78d:oracle-xe/.md5sum
+f:f14f93e311fa975b57731c7be8a5dc6d:oracle-xe/.md5sum
 f:ba78a5b973825c0cd15df2be45280e9f:oracle-xe/.footprint
 f:5cefffb9c448f3379261313c3f8fb891:mfs-master/mfscgiserv
 f:0a5ac0208606524ac8220f6048f21ee7:mfs-master/mfsmaster
@@ -38,6 +38,7 @@ f:5cd2ad1f83ff94a0799aaf6a8f84c354:mfs-master/mfsmetalogger
 f:50ede55698dbf7372e549cd2abe93e9b:mfs-master/pre-install
 f:a7ce4a75c33cebf3892ecdec00a0ea0d:mfs-master/.md5sum
 f:8f1507f12aa9b9e6fc5aaa76d5266cb3:mfs-master/.footprint
+f:5d280429251c9a2faf627a071c2a22b7:.httpup-urlinfo
 f:fdbc225ec81a3eb00ead8f9b7c492abd:pdns-recursor/Makefile.patch
 f:d1f3f74e7057a968403a7519b6a98d6c:pdns-recursor/Pkgfile
 f:950d91139e23dd995eb3a8149e24311a:pdns-recursor/pdns-recursor
@@ -63,3 +64,4 @@ f:96936fbaffe184853dfc847725b33ab3:jdk/Pkgfile
 f:d8e0da19e05574e1ab5eeb107b990f32:jdk/README
 f:32b6017674a2f05e4137932b0aeefd9f:jdk/.md5sum
 f:2e2b60dcf2805c9147e0549b84bab45e:jdk/.footprint
+f:eaae2840f190e6d9da1f35e68bcfa760:.httpup-repo.current

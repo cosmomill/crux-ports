@@ -39,6 +39,9 @@ build() {
 	# Create sysconfig directory
 	install -d $PKG/etc/sysconfig
 
+	# Replace deprecated netstat with ss
+	sed -i "s|netstat -n --tcp --listen|ss -ntl|" $SRC/etc/init.d/oracle-xe
+
 	# Start Oracle XE services at boot
 	install -D -m 755 $SRC/etc/init.d/oracle-xe $PKG/etc/rc.d/oracle-xe
 	sed -i "s|/bin/su|/usr/bin/su|" $PKG/etc/rc.d/oracle-xe
